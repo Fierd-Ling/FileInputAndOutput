@@ -9,8 +9,9 @@
 		<form id="file">
 <input type="file" accept="image/png,image/jpeg, image/gif,image/jpg"
  name="inputfil" id="inputfil"/>
-  <input type="button" value="上传" id="span"/>
 		</form>
+		<span id="span" style="background:blue">上传</span>
+		
 <script type="text/javascript"  src="jquery-3.3.1.js">
 </script>
 <script type="text/javascript">
@@ -20,24 +21,24 @@ $(document).ready(function(){
 		 //console.log(formData);
 		$.ajax({
             url: "fileController/inputImg",
-            type: "POST",
+            type: "post",
             data: formData,
             cache: false,
             contentType: false,
            processData: false,
         	async: false, 
             success: function(data) {
-            	alert("ok");
-            	window.location.reload();
+            	if(data=="success"){
+            		alert("上传成功");
+                	window.location.reload();
+            	}
+            	else{
+            		alert("上传失败");
+                	window.location.reload();
+            	}
             }
        })
-		
-		
 	});
-	
-	
-	
-	
 });
 
 
