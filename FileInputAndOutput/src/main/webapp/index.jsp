@@ -5,16 +5,16 @@
 <style type="text/css">
 </style>
 <body>
-       <!-- 需要form表单包起来 -->
-		<form id="file">
-<input type="file" accept="image/png,image/jpeg, image/gif,image/jpg"
- name="inputfil" id="inputfil"/>
-		</form>
-		<span id="span" style="background:blue">上传</span>
-		
-<script type="text/javascript"  src="jquery-3.3.1.js">
+	<!-- 需要form表单包起来 -->
+	<form id="file">
+		<input type="file" name="inputfil" id="inputfil" />
+	</form>
+	<span id="span" style="background: blue">上传</span>
+	 
+	<a href="fileController/download">下载</a>
+	<script type="text/javascript" src="jquery-3.3.1.js">
 </script>
-<script type="text/javascript">
+	<script type="text/javascript">
 $(document).ready(function(){
 	$("#span").click(function(){
 		var formData = new FormData($("#file")[0]);  //上传的文件file
@@ -45,8 +45,5 @@ $(document).ready(function(){
 
 
 </script>
-
-
-
 </body>
 </html>

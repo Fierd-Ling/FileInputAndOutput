@@ -43,12 +43,20 @@ public class FileServiceImpl implements FileService {
 		if(multipartFile==null) {
 			return resultString;	
 		}
-		// 截取文件类型
-		String contentType = multipartFile.getContentType();
-		String type = contentType.substring(contentType.indexOf("/") + 1);
+		// 文件长度
 		Long size=multipartFile.getSize();
 		// 获取文件名字
 		String oldFileName = multipartFile.getOriginalFilename();
+		//获取文件后缀
+		String type =oldFileName;
+		boolean flag =true;
+		//循环截取后缀
+		while(flag) {
+			type= type.substring(type.indexOf(".")+1);
+			if(!type.contains(".")) {
+				flag = false;
+			}
+		}
 		String fileNewName=Time.getTime();
 		// 修改名字防止冲突覆盖
 		File houseFile = new File(AbstractConstant.FILE_URL + fileNewName + "." + type);
@@ -71,11 +79,11 @@ public class FileServiceImpl implements FileService {
 		Integer result = fileMapper.insertFile(baseFileDTO);
 		if (result==1) {
 			resultString = AbstractConstant.INSERT_FILE_SUCCESS;
-			log.info("上传文件成功文件类型是 ：" + contentType + "  文件名称是：" + oldFileName);
+			log.info("上传文件成功文件类型是 ：" + type + "  文件名称是：" + oldFileName);
 			return resultString;
 		}  
 			// 如果数据库受影响的行数不是1，数据库存储出错，返回错误提示，用户重新上传
-			log.debug("上传文件失败文件类型是：" + contentType + "  文件名称是：" + oldFileName + "数据库记录出错");
+			log.debug("上传文件失败文件类型是：" + type + "  文件名称是：" + oldFileName + "数据库记录出错");
 			return resultString;	
 	}
 
