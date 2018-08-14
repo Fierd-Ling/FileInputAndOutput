@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="Generator" content="EditPlus®">
+<meta name="Author" content="">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+<title>Document</title>
+<script type="text/javascript" src="jquery-3.3.1.js">
+	
+</script>
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+				// 初始化页面，固定数据
+				listTable(1, 10);
+				countSize();
+				// 文件上传
+				$("#span").click(function() {
+					var formData = new FormData($("#file")[0]); //上传的文件file
+					//console.log(formData);
+					$.ajax({
+						url : "fileController/inputImg",
+						type : "post",
+						data : formData,
+						cache : false,
+						contentType : false,
+						processData : false,
+						async : false,
+						success : function(data) {
+							if (data == "success") {
+								alert("上传成功");
+								//alert(data);
+								//window.location.reload();
+								// 上传成功刷新文件列表
+								//listTable();
+								countSize();
+								return;
+							}
+							if (data = "isEmpyt") {
+								alert("上传文件不能为空");
+								//window.location.reload();
+								//listTable();
+								return;
+							} else {
+								alert("上传失败");
+								//window.location.reload();
+								return;
+							}
+						}
+					})
+				});
+
+				// 表单展示
+				function listTable(page, pageSize) {
+					$.ajax({
+						url : "fileController/listFile",
+						type : "post",
+						data : {
+							"page" : page,
+							"pageSize" : pageSize
+						},
+						success : function(list) {
+							//console.log(list);
+							var size = list.length;
+							var tableList = $("#tableList");
+							// 清空之前的
+							tableList.empty();
+							for (var x = 0; x < size; x++) {
+								tableList.append("<span id='type' >"
+										+ list[x].fileType + "</span>");
+								tableList.append("<span id='oldName'>"
+										+ list[x].fileOldName + "</span>");
+								tableList.append("<span id='newName'>"
+										+ list[x].fileNewName + "</span");
+								tableList.append("<span id='size'>"
+										+ list[x].size + "</span>");
+								tableList.append("<span id='op'></span'>");
+								tableList.append('<br>');
+							}
+							return;
+						}
+					});
+				}
+
+				// 下一页
+				$("#next").click(function() {
+					//window.location.reload();
+					//alert();
+					var page = parseInt($("#p").val());// 4
+					var pageSize = 10;// 暂时固定每页10行
+					var countSize = parseInt($("#baseSize").val())
+					// 获取最大的页码
+					var countPage=Math.ceil(countSize/pageSize);
+					if(page==countPage){
+						alert("已经是最后一页");
+						return;
+					}
+					//alert(page);
+					page = page + 1;
+					listTable(page, pageSize);
+					var p = $("#p");
+					//p.empty();
+					p.val(page);// 修改页面值
+					//alert(p.val());
+					return;
+				});
+			 $("#befor").click(function(){
+				 var page = parseInt($("#p").val());// 4
+					var pageSize = 10;// 暂时固定每页10行
+					//alert(page);
+					if(page==1){
+						alert("已经是第一页");
+						return;
+						
+					}
+					page = page - 1;
+					listTable(page, pageSize);
+					var p = $("#p");
+					//p.empty();
+					p.val(page);// 修改页面值
+					//alert(p.val());
+					return;
+				 
+			 });
+					 
+					  
+				
+
+				// 计算总条数
+				function countSize() {
+					$.ajax({
+						url : "fileController/countFile",
+						type : "post",
+						success : function(data) {
+							var baseSize = $("#baseSize");
+							//alert(data);
+							baseSize.val(data);
+							return;
+						}
+					});
+
+				}
+			});
+</script>
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#table {
+	width: 700px;
+	height: 500px;
+	border: 1px solid blue;
+	position: relative;
+	margin-left: 100px;
+	margin-top: 100px;
+}
+
+#table ul {
+	display: block;
+	width: 700px;
+	height: 30px;
+}
+
+#table ul li {
+	display: block;
+	border: 1px solid blue;
+	float: left;
+	line-height: 28px;
+	text-align: center;
+}
+
+#bottom {
+	position: absolute;
+	bottom: 0;
+	width: 698px;
+	height: 50px;
+	border: 1px solid blue;
+}
+
+#tableList {
+	width: 698px;
+	height: 416px;
+	border: 1px solid blue;
+}
+
+span {
+	display: block;
+	border: 1px solid blue;
+	float: left;
+	line-height: 28px;
+	text-align: center;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+#size {
+	width: 90px;
+	height: 28px;
+}
+
+#type {
+	width: 100px;
+	height: 28px;
+}
+
+#oldName {
+	width: 200px;
+	height: 28px;
+}
+
+#op {
+	width: 98px;
+	height: 28px;
+}
+
+#newName {
+	width: 200px;
+	height: 28px;
+}
+
+#op1 {
+	width: 100px;
+	height: 28px;
+}
+
+#countSize {
+	width: 100px;
+	height: 30px;
+	float: left;
+	margin-left: 100px;
+	margin-top: 10px;
+}
+
+#countSize ul li {
+	float: left;
+	line-height: 30px;
+	border: 0;
+}
+
+#page {
+	width: 250px;
+	height: 30px;
+	float: left;
+	margin-left: 300px;
+	margin-top: 10px;
+}
+
+#befor {
+	float: left;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	color: white;
+	margin-left: 10px;
+	background: green;
+	text-align: center;
+}
+
+#next {
+	float: left;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	color: white;
+	margin-left: 10px;
+	background: green;
+	text-align: center;
+}
+
+#p {
+	/* //display:block; */
+	float: left;
+	width: 60px;
+	height: 30px;
+	margin-left: 10px;
+	line-height: 30px;
+	text-align: center;
+	font-size: 15px;
+	color: red;
+	border: 0px;
+}
+#baseSize{
+border: 0px;
+line-height: 30px;
+text-align: left;
+font-size: 15px;
+color: red;
+width:40px;
+height:30px;
+
+}
+</style>
+</head>
+<body>
+	<!-- 需要form表单包起来 -->
+	<form id="file">
+		<input type="file" name="inputfil" id="inputfil" />
+	</form>
+	<span id="span" style="background: blue">上传</span>
+	<div id="table">
+		<ul>
+			<li id='type'>文件类型</li>
+			<li id='oldName'>文件文件原名称</li>
+			<li id='newName'>文件仓库中名称</li>
+			<li id='size'>文件大小</li>
+			<li id='op1'>操作</li>
+		</ul>
+		<div id="tableList"></div>
+		<div id="bottom">
+			<div id="countSize">
+				<ul>
+					<li>总共</li>
+					<input type="text" id="baseSize" value=11111 readonly="readonly">
+					<li>条</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<div id="page">
+
+		<div id="befor">《上一页</div>
+		<input type="text" id="p" value=1>
+		<div id="next" >下一页》</div>
+	</div>
+
+</body>
+</html>

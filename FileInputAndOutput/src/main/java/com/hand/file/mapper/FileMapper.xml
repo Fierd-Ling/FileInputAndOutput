@@ -14,6 +14,16 @@
 		insert into file(file_old_name,file_new_name,file_type,size)
 		values(#{fileOldName},#{fileNewName},#{fileType},#{size})
 	</insert>
+	
+	<!-- 统计数据库中总共文件数量 -->
+	<select id="countFile" resultType="java.lang.Integer">
+	 select count(*) from file;
+	</select>
+	
+	<!-- 分页查询文件表 -->
+	<select id="listFile" resultMap="BaseResultMap">
+		select file_id,file_old_name,file_new_name,size,file_type from file LIMIT 10 OFFSET #{begin}
+	</select>
 
 
 

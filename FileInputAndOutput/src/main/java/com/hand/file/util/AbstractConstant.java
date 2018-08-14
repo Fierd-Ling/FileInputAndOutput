@@ -31,5 +31,7 @@ public abstract class AbstractConstant {
 	 * 插入文件失败
 	 */
 	public static final String INSERT_FILE_FAILURE = "failure";
+	
+	public static final String FILE_IS_EMPTY="isEmpyt";
 
 }

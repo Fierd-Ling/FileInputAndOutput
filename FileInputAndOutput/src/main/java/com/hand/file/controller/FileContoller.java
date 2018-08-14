@@ -1,11 +1,8 @@
 package com.hand.file.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hand.file.pojo.BaseFileDTO;
 import com.hand.file.service.FileService;
 import com.hand.file.util.AbstractConstant;
 
@@ -41,14 +38,18 @@ public class FileContoller {
 	@Autowired
 	private FileService fileService;
 
+	// TODO 文件传入需要做分库处理 哈希分库
 	@RequestMapping(value = "/inputImg", method = RequestMethod.POST)
 	public @ResponseBody String inputImg(
 			// 此处名字要和input中的name同名
 			MultipartFile inputfil) {
 		String result = AbstractConstant.INSERT_FILE_FAILURE;
-		// 入参参数校验
+		// 入参参数校验，防止空指针异常
 		if (inputfil == null) {
 			return result;
+		}
+		if (inputfil.isEmpty()) {
+			return AbstractConstant.FILE_IS_EMPTY;
 		}
 		result = fileService.insertFileMassage(inputfil);
 		return result;
@@ -80,5 +81,55 @@ public class FileContoller {
 		// FileUtils.readFileToByteArray(file);
 		byte[] fileArray = FileUtils.readFileToByteArray(file);
 		return new ResponseEntity<byte[]>(fileArray, headers, HttpStatus.CREATED);
+	}
+
+	/**
+	 * 
+	 * @Title: listFile
+	 * 
+	 * @Description:分页查询
+	 * 
+	 * @param @param
+	 *            page 第几页
+	 * @param @param
+	 *            pagesize 一页多少条
+	 * @param @return
+	 *            如果传入的参数为空或者为负数，返回值也为空
+	 * 
+	 * @return List<BaseFileDTO>
+	 * 
+	 * @author ZhongLingYun
+	 * 
+	 */
+	@RequestMapping(value = "/listFile", method = RequestMethod.POST)
+	public @ResponseBody List<BaseFileDTO> listFile(Integer page, Integer pageSize) {
+		List<BaseFileDTO> list = null;
+		// 入参参数校验
+		if (page == null || page < 0) {
+			return list;
+		}
+		if (pageSize == null || page < 0) {
+			return list;
+		}
+		list = fileService.listFile(page, pageSize);
+		return list;
+	}
+
+	/**
+	 * 
+	 * @Title: countFile
+	 * 
+	 * @Description:一部查询文件库所有文件数量
+	 * 
+	 * @return 文件数量
+	 * 
+	 *         Integer
+	 * 
+	 * @author ZhongLingYun
+	 * 
+	 */
+	@RequestMapping(value = "/countFile",method=RequestMethod.POST)
+	public @ResponseBody Integer countFile() {
+		return fileService.countFile();
 	}
 }
