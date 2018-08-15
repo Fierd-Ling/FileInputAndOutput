@@ -103,7 +103,12 @@ public class FileServiceImpl implements FileService {
 			return null;
 		}
 		//页码向上取整获得最大页码
-		Integer pageCount=((fileMapper.countFile())/pageSize)+1;
+		Integer pageCount=(fileMapper.countFile())/pageSize;
+		int rest=(fileMapper.countFile())%pageSize;
+		// 当53条数据的时候应该是6页，而50条数据应该是5页
+		if(rest!=0) {
+			pageCount++;
+		}
 		 // 防止页码超过
 		if(page>pageCount) {
 			return null;
